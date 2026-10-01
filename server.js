@@ -13,13 +13,17 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// Conexión a la base de datos MySQL mi_base (Replicando Config/Conexion.java)
+// Conexión a la base de datos MySQL mi_base (compatible con XAMPP local y TiDB Cloud Serverless)
 export const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'mi_base',
-  port: 3306,
+  host: process.env.DB_HOST || process.env.TIDB_HOST || 'localhost',
+  user: process.env.DB_USER || process.env.TIDB_USER || 'root',
+  password: process.env.DB_PASSWORD || process.env.TIDB_PASSWORD || '',
+  database: process.env.DB_NAME || process.env.TIDB_DATABASE || 'mi_base',
+  port: parseInt(process.env.DB_PORT || process.env.TIDB_PORT || '3306', 10),
+  ssl: (process.env.DB_SSL === 'true' || process.env.TIDB_ENABLE_SSL === 'true' || process.env.TIDB_HOST) ? {
+    minVersion: 'TLSv1.2',
+    rejectUnauthorized: true
+  } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -355,7 +359,11 @@ app.post('/api/ventas', async (req, res) => {
   }
 });
 
-app.listen(PORT, async () => {
-  console.log(`🚀 Servidor MySQL Backend JS ejecutándose en http://localhost:${PORT}`);
-  await verificarConexion();
-});
+export default app;
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, async () => {
+    console.log(`🚀 Servidor MySQL Backend JS ejecutándose en http://localhost:${PORT}`);
+    await verificarConexion();
+  });
+}

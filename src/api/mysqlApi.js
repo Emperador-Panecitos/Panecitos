@@ -1,7 +1,7 @@
 // src/api/mysqlApi.js
 // Cliente JavaScript para consumir la base de datos MySQL `mi_base` a través de la API REST
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function request(endpoint, options = {}) {
   const res = await fetch(`${API_BASE}${endpoint}`, {
