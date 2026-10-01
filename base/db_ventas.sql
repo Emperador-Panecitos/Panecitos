@@ -17,9 +17,9 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Base de datos: `mi_base`
---
+CREATE DATABASE IF NOT EXISTS `mi_base`;
+USE `mi_base`;
 
 -- --------------------------------------------------------
 
